@@ -16,6 +16,7 @@ def get_nb_questions():
     return nb_Questions
 # --------------------------------------------------------------------------------------------------------------
 
+
 # Get patterns  ------------------------------------------------------------------------------------------
 def get_patterns(subject):
     pattern_Debut = []
@@ -23,7 +24,7 @@ def get_patterns(subject):
     pattern_point = [r"points\)",r"point\)",r"pts\)",r"pt\)"]
     pattern_numero = [[f"{num}\)",f"{num}/",f"Q{num}",f"QUESTION {num}",f"QUESTION{num}"] for num in range(1,10)]
 
-    if subject.endswith(".docx"):
+    if subject.endswith(".docx"): #only for docx, pdf file scheduling
         file = docx.Document(subject)
         numero_is_inside = False
         for paragraph in file.paragraphs:
@@ -37,7 +38,11 @@ def get_patterns(subject):
                 for i in range(9):
                         for j in range(len(pattern_numero[i])):
                             if re.match(pattern_numero[i][j], paragraph.text):
-                                pattern_Debut.append(paragraph.text)
+                                if j == 0 or j == 1:
+                                    pattern_Debut.append(re.sub(r'^\d+\)|^\d+/', '', paragraph.text))
+                                    #Remove 1) or 1/
+                                else :
+                                    pattern_Debut.append(paragraph.text)
             else :
                 for i in range(len(pattern_point)):
                     if re.search(pattern_point[i], paragraph.text):
@@ -47,19 +52,5 @@ def get_patterns(subject):
         pattern_End.append(pattern_Debut[i])
     pattern_End.append("///")
     
-    #print(pattern_Debut[0])
-    #print(pattern_End)
-
     return pattern_Debut, pattern_End
 # --------------------------------------------------------------------------------------------------------------
-
-#doc = docx.Document("reference_answer/" + get_file("reference_answer/"))
-#
-##nb = get_nb_questions()
-#document = ""
-#for i in range(len(doc.paragraphs)):
-#    document += (doc.paragraphs[i].text + "\n")
-#
-#print(document)
-
-#rint(get_patterns("reference_answer/" + get_file("reference_answer/")))

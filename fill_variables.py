@@ -14,7 +14,3 @@ def get_file(folder):
             file = filename
     return file
 # ----------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-#print(get_reference_answer_file("reference_answer"))
