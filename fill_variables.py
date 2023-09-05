@@ -10,7 +10,7 @@ def get_folder(folder):
 #Get files ------------------------------------------------------------------------------------------------------------------
 def get_file(folder):
     for filename in os.listdir(folder):
-        if filename.endswith(".docx") or filename.endswith(".pdf"):
+        if filename.endswith(".docx") or filename.endswith(".pdf") or filename.endswith(".xlsx"):
             file = filename
     return file
 # ----------------------------------------------------------------------------------------------------------------------------------------
