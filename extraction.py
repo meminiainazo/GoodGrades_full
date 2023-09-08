@@ -21,15 +21,11 @@ def get_question_grade(grade, grade_pattern):
 
 
 #Extract bareme ---------------------------------------------------------------------------------------------------------
-def extract_bareme(grade, grade_pattern):
+def extract_bareme(column, j):
     max_Grade_pattern = r"Max grade:\s*(\d+)"
-    grades_column_name = get_question_grade(grade, grade_pattern)
-    i = 0
-    for column in grades_column_name:
-        if re.search(max_Grade_pattern, column):
-            match = re.search(max_Grade_pattern, column)
-            template.at[i, "note_sur"] = float(match.group(1))
-            i += 1
+    if re.search(max_Grade_pattern, column):
+        match = re.search(max_Grade_pattern, column)
+        template.at[j, "note_sur"] = float(match.group(1))
 # ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -67,18 +63,19 @@ def extract_between(file, start_pattern, end_pattern):
 
 
 #Extraction --------------------------------------------------------------------------------------------------------------
-def extraction(grade, subject_Folder, subject):
+def extraction(grade, subject_Folder, subject, students_answer_Folder):
     file = pd.read_excel(grade)
     grade_pattern = r"Grade:\s*(\d+\.?\d*)"
-    extract_bareme(file, grade_pattern)
-    target_columns = get_question_grade(file, grade_pattern)
-    start_pattern, end_pattern = get_patterns(subject_Folder + subject)
-    j,k = 0,0
+    target_columns = get_question_grade(file, grade_pattern) #Take the list of cells who contains the grades 
+    start_pattern, end_pattern = get_patterns(subject_Folder + subject) #Take the patterns
+    j,k = 0,0 #For looping the row and filling baremes
     for name_index in range(file.shape[0]):
         for column in target_columns:
-            extract_name_and_grades(file, template.at[k, "note_sur"], name_index, column, grade_pattern, j)
-            template.at[j, "enonce"] = extract_between(subject_Folder + subject, start_pattern[k], end_pattern[k])
-            #extract_questions()
+            extract_bareme(column, j) #Take baremes and fill these into the file
+            extract_name_and_grades(file, template.at[k, "note_sur"], name_index, column, grade_pattern, j) #Extract name and grades
+            template.at[j, "enonce"] = extract_between(subject_Folder + subject, start_pattern[k], end_pattern[k]) #Extract questions
+            answer_Folder = students_answer_Folder + file.iloc[name_index][0] + "/"
+            template.at[j, "reponse_apprenant"] = extract_between(answer_Folder + get_file(answer_Folder), start_pattern[k], end_pattern[k])
             if k>len(target_columns)-2:
                 k = 0
             else :
