@@ -40,17 +40,23 @@ def get_patterns(subject):
                             if re.match(pattern_numero[i][j], paragraph.text):
                                 if j == 0 or j == 1:
                                     pattern_Debut.append(re.sub(r'^\d+\)|^\d+/', '', paragraph.text))
-                                    #Remove 1) or 1/
-                                else :
-                                    pattern_Debut.append(paragraph.text)
+                                else:
+                                    pattern_Debut.append(pattern_numero[i][j])
+                                    #pattern_Debut.append(paragraph.text)
             else :
                 for i in range(len(pattern_point)):
                     if re.search(pattern_point[i], paragraph.text):
                         pattern_Debut.append(paragraph.text)
+
+    #pattern_Debut_clean = [re.sub(r'^\d+\)|^\d+/|^Q\d+\s*\s*', '', list) for list in pattern_Debut]
+        #Remove 1) or 
+    #pattern_Debut.append(re.sub(r'^Q\d+\s*\s*', '', paragraph.text))
                         
     for i in range(1,len(pattern_Debut)):
         pattern_End.append(pattern_Debut[i])
     pattern_End.append("///")
+
+    #print("hello")
     
     return pattern_Debut, pattern_End
 # --------------------------------------------------------------------------------------------------------------
